@@ -24,6 +24,8 @@ class DatabaseConfig:
     """Database configuration."""
 
     db_url: str
+    db_conn_args: dict
+    db_kwargs: dict
     table_name: str
 
 
@@ -75,8 +77,8 @@ def get_database_by_config(config: DatabaseConfig) -> Iterator[Database]:
     """Context manager which creates database wrapper."""
     engine = create_engine(
         config.db_url,
-        connect_args={'encoding': 'UTF-8', 'nencoding': 'UTF-8'},
-        max_identifier_length=128,
+        connect_args=config.db_conn_args,
+        **config.db_kwargs,
     )
     session = Session(engine)
 
