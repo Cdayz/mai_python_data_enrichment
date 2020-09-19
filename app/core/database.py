@@ -64,11 +64,15 @@ class Database:
 
 @contextlib.contextmanager
 def get_database_by_config(config: DatabaseConfig) -> Iterator[Database]:
-    engine = create_engine(config.db_url, encoding='utf-8')
+    engine = create_engine(
+        config.db_url,
+        connect_args={'encoding': 'UTF-8', 'nencoding': 'UTF-8'},
+        max_identifier_length=128,
+    )
     session = Session(engine)
 
     try:
-        yield Database(engine, session, table_name=config.table_name)
+        yield Database(session, engine, table_name=config.table_name)
         session.commit()
     except Exception as e:
         session.rollback()
