@@ -29,7 +29,10 @@ def extend_database_records(
             item_pk = {}
             update_data = {}
 
-            for field, value in item.values():
+            for field, value in item.items():
+                if not value:
+                    continue
+
                 if field in join_cfg.search_mappings:
                     item_pk[join_cfg.search_mappings[field]] = value
                 elif field in join_cfg.update_mapping:
