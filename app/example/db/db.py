@@ -1,3 +1,5 @@
+"""Database url."""
+
 import os
 from urllib.parse import quote
 
