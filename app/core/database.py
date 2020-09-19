@@ -1,3 +1,5 @@
+"""Database wrapper."""
+
 import logging
 import contextlib
 import dataclasses
@@ -26,17 +28,21 @@ class DatabaseConfig:
 
 
 class Database:
+    """Wrapper around database which uses sqlalchemy reflection."""
+
     def __init__(
         self,
         session: Session,
         engine: Engine,
         table_name: str,
     ):
+        """Initialize wrapper with database engine and session."""
         self.session = session
         self.engine = engine
         self.table = self.reflect_table(table_name)
 
     def reflect_table(self, table_name: str) -> Table:
+        """Get table from database through sqlalchemy reflection."""
         Base = automap_base()
         Base.prepare(self.engine, reflect=True)
         table = getattr(Base.classes, table_name)
@@ -44,6 +50,7 @@ class Database:
         return table
 
     def update_item(self, item_pk: dict, update_fields: dict):
+        """Update item in database by pk with update_fields."""
         db_row = self.session.query(self.table).filter_by(**item_pk).one()
 
         for field, value in update_fields.items():
@@ -52,6 +59,7 @@ class Database:
         self.session.add(db_row)
 
     def __contains__(self, item_pk: dict):
+        """Check that element by given pk exists in database."""
         try:
             self.session.query(self.table).filter_by(**item_pk).one()
         except NoResultFound:
@@ -64,6 +72,7 @@ class Database:
 
 @contextlib.contextmanager
 def get_database_by_config(config: DatabaseConfig) -> Iterator[Database]:
+    """Context manager which creates database wrapper."""
     engine = create_engine(
         config.db_url,
         connect_args={'encoding': 'UTF-8', 'nencoding': 'UTF-8'},

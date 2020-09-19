@@ -1,6 +1,8 @@
+"""Data mapper."""
+
 import dataclasses
 
-from typing import Mapping, List
+from typing import Mapping
 
 from app.core.data_loader import DataLoaderConfig, fetch_data_by_config
 from app.core.database import DatabaseConfig, get_database_by_config
@@ -8,6 +10,8 @@ from app.core.database import DatabaseConfig, get_database_by_config
 
 @dataclasses.dataclass
 class DataJoinConfig:
+    """Config for join data of table with fetched remote data."""
+
     search_mappings: Mapping[str, str]
     update_mapping: Mapping[str, str]
 
@@ -17,7 +21,8 @@ def extend_database_records(
     data_load_cfg: DataLoaderConfig,
     join_cfg: DataJoinConfig,
 ):
-    data: List[dict] = fetch_data_by_config(data_load_cfg)
+    """Map database records with fetched data records and update database."""
+    data = fetch_data_by_config(data_load_cfg)
 
     with get_database_by_config(db_cfg) as database:
         for item in data:
