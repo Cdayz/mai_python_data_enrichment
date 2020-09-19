@@ -140,3 +140,5 @@ cython_debug/
 keys/
 library/
 .env.local
+run_example.sh
+*.ipynb
