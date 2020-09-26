@@ -58,7 +58,6 @@ def initialize():
             DB_URL,
             connect_args=DB_CN_ARGS,
             **DB_KWARGS,
-            echo=True,
         )
         init_db(engine)
     finally:
